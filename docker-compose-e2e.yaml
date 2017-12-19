@@ -1,0 +1,50 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+  tigerwitnetwork:
+services:
+  ca:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-tigerwitorg
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org.tigerwit.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/157e615ed8257316a2aaa99896a882d4555b259038adbf89d078eee4ead7119a_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org.tigerwit.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/157e615ed8257316a2aaa99896a882d4555b259038adbf89d078eee4ead7119a_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org.tigerwit.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerTigerWitOrg
+    networks:
+      - tigerwitnetwork
+
+  orderer.tigerwit.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.tigerwit.com
+    container_name: orderer.tigerwit.com
+    networks:
+      - tigerwitnetwork
+
+  peer0.org.tigerwit.com:
+    container_name: peer0.org.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org.tigerwit.com
+    networks:
+      - tigerwitnetwork
+
+  peer1.org.tigerwit.com:
+    container_name: peer1.org.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org.tigerwit.com
+    networks:
+      - tigerwitnetwork
