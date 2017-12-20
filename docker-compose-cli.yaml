@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  tigerwitnetwork:
+  bmtn:
 
 services:
 
@@ -16,23 +16,39 @@ services:
       service: orderer.tigerwit.com
     container_name: orderer.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
 
-  peer0.org.tigerwit.com:
-    container_name: peer0.org.tigerwit.com
+  peer0.plantform.tigerwit.com:
+    container_name: peer0.plantform.tigerwit.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer0.org.tigerwit.com
+      service: peer0.plantform.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
 
-  peer1.org.tigerwit.com:
-    container_name: peer1.org.tigerwit.com
+  peer1.plantform.tigerwit.com:
+    container_name: peer1.plantform.tigerwit.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer1.org.tigerwit.com
+      service: peer1.plantform.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
+
+  peer0.user.tigerwit.com:
+    container_name: peer0.user.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.user.tigerwit.com
+    networks:
+      - bmtn
+
+  peer1.user.tigerwit.com:
+    container_name: peer1.user.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.user.tigerwit.com
+    networks:
+      - bmtn
 
   cli:
     container_name: cli
@@ -43,25 +59,27 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.org.tigerwit.com:7051
-      - CORE_PEER_LOCALMSPID=TigerWitOrgMSP
+      - CORE_PEER_ADDRESS=peer0.plantform.tigerwit.com:7051
+      - CORE_PEER_LOCALMSPID=PlantFormMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org.tigerwit.com/peers/peer0.org.tigerwit.com/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org.tigerwit.com/peers/peer0.org.tigerwit.com/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org.tigerwit.com/peers/peer0.org.tigerwit.com/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org.tigerwit.com/users/Admin@org.tigerwit.com/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/plantform.tigerwit.com/peers/peer0.plantform.tigerwit.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/plantform.tigerwit.com/peers/peer0.plantform.tigerwit.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/plantform.tigerwit.com/peers/peer0.plantform.tigerwit.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/plantform.tigerwit.com/users/Admin@plantform.tigerwit.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     # command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME} ${DELAY}; sleep $TIMEOUT'
     volumes:
         - /var/run/:/host/var/run/
-        - ./../chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
+        - ./../chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/chaincode
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
       - orderer.tigerwit.com
-      - peer0.org.tigerwit.com
-      - peer1.org.tigerwit.com
+      - peer0.plantform.tigerwit.com
+      - peer1.plantform.tigerwit.com
+      - peer0.user.tigerwit.com
+      - peer1.user.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
 

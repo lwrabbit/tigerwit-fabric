@@ -31,40 +31,78 @@ services:
     ports:
       - 7050:7050
 
-  peer0.org.tigerwit.com:
-    container_name: peer0.org.tigerwit.com
+  peer0.plantform.tigerwit.com:
+    container_name: peer0.plantform.tigerwit.com
     extends:
       file: peer-base.yaml
       service: peer-base
     environment:
-      - CORE_PEER_ID=peer0.org.tigerwit.com
-      - CORE_PEER_ADDRESS=peer0.org.tigerwit.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org.tigerwit.com:7051
-      - CORE_PEER_LOCALMSPID=TigerWitOrgMSP
+      - CORE_PEER_ID=peer0.plantform.tigerwit.com
+      - CORE_PEER_ADDRESS=peer0.plantform.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.plantform.tigerwit.com:7051
+      - CORE_PEER_LOCALMSPID=PlantFormMSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../crypto-config/peerOrganizations/org.tigerwit.com/peers/peer0.org.tigerwit.com/msp:/etc/hyperledger/fabric/msp
-        - ../crypto-config/peerOrganizations/org.tigerwit.com/peers/peer0.org.tigerwit.com/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/peerOrganizations/plantform.tigerwit.com/peers/peer0.plantform.tigerwit.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/plantform.tigerwit.com/peers/peer0.plantform.tigerwit.com/tls:/etc/hyperledger/fabric/tls
     ports:
       - 7051:7051
       - 7053:7053
 
-  peer1.org.tigerwit.com:
-    container_name: peer1.org.tigerwit.com
+  peer1.plantform.tigerwit.com:
+    container_name: peer1.plantform.tigerwit.com
     extends:
       file: peer-base.yaml
       service: peer-base
     environment:
-      - CORE_PEER_ID=peer1.org.tigerwit.com
-      - CORE_PEER_ADDRESS=peer1.org.tigerwit.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org.tigerwit.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org.tigerwit.com:7051
-      - CORE_PEER_LOCALMSPID=TigerWitOrgMSP
+      - CORE_PEER_ID=peer1.plantform.tigerwit.com
+      - CORE_PEER_ADDRESS=peer1.plantform.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.plantform.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.plantform.tigerwit.com:7051
+      - CORE_PEER_LOCALMSPID=PlantFormMSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../crypto-config/peerOrganizations/org.tigerwit.com/peers/peer1.org.tigerwit.com/msp:/etc/hyperledger/fabric/msp
-        - ../crypto-config/peerOrganizations/org.tigerwit.com/peers/peer1.org.tigerwit.com/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/peerOrganizations/plantform.tigerwit.com/peers/peer1.plantform.tigerwit.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/plantform.tigerwit.com/peers/peer1.plantform.tigerwit.com/tls:/etc/hyperledger/fabric/tls
 
     ports:
       - 8051:7051
       - 8053:7053
+
+  peer0.user.tigerwit.com:
+    container_name: peer0.user.tigerwit.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.user.tigerwit.com
+      - CORE_PEER_ADDRESS=peer0.user.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.user.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.user.tigerwit.com:7051
+      - CORE_PEER_LOCALMSPID=UserMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/user.tigerwit.com/peers/peer0.user.tigerwit.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/user.tigerwit.com/peers/peer0.user.tigerwit.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:7051
+      - 9053:7053
+
+  peer1.user.tigerwit.com:
+    container_name: peer1.user.tigerwit.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.user.tigerwit.com
+      - CORE_PEER_ADDRESS=peer1.user.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.user.tigerwit.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.user.tigerwit.com:7051
+      - CORE_PEER_LOCALMSPID=UserMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/user.tigerwit.com/peers/peer1.user.tigerwit.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/user.tigerwit.com/peers/peer1.user.tigerwit.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 10051:7051
+      - 10053:7053

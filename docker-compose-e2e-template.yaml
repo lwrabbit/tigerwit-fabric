@@ -6,24 +6,41 @@
 version: '2'
 
 networks:
-  tigerwitnetwork:
+  bmtn:
 services:
-  ca:
+  caPlantForm:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-tigerwitorg
+      - FABRIC_CA_SERVER_CA_NAME=ca-plantform
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org.tigerwit.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.plantform.tigerwit.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CAPLANTFORM_PRIVATE_KEY
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org.tigerwit.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.plantform.tigerwit.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/org.tigerwit.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_peerTigerWitOrg
+      - ./crypto-config/peerOrganizations/plantform.tigerwit.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerPlantForm
     networks:
-      - tigerwitnetwork
+      - bmtn
+
+  caUser:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-user
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.user.tigerwit.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CAUSER_PRIVATE_KEY
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.user.tigerwit.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/user.tigerwit.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerUser
+    networks:
+      - bmtn
 
   orderer.tigerwit.com:
     extends:
@@ -31,20 +48,36 @@ services:
       service: orderer.tigerwit.com
     container_name: orderer.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
 
-  peer0.org.tigerwit.com:
-    container_name: peer0.org.tigerwit.com
+  peer0.plantform.tigerwit.com:
+    container_name: peer0.plantform.tigerwit.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer0.org.tigerwit.com
+      service: peer0.plantform.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
 
   peer1.org.tigerwit.com:
-    container_name: peer1.org.tigerwit.com
+    container_name: peer1.plantform.tigerwit.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer1.org.tigerwit.com
+      service: peer1.plantform.tigerwit.com
     networks:
-      - tigerwitnetwork
+      - bmtn
+
+  peer0.user.tigerwit.com:
+    container_name: peer0.user.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.user.tigerwit.com
+    networks:
+      - bmtn
+
+  peer1.user.tigerwit.com:
+    container_name: peer1.user.tigerwit.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.user.tigerwit.com
+    networks:
+      - bmtn

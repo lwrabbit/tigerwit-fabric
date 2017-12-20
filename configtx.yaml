@@ -22,13 +22,15 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *TigerWitOrg
+                    - *PlantForm
+                    - *User
     TigerWitChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *TigerWitOrg
+                - *PlantForm
+                - *User
 
 ################################################################################
 #
@@ -53,21 +55,38 @@ Organizations:
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/tigerwit.com/msp
 
-    - &TigerWitOrg
+    - &PlantForm
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: TigerWitOrgMSP
+        Name: PlantFormMSP
 
         # ID to load the MSP definition as
-        ID: TigerWitOrgMSP
+        ID: PlantFormMSP
 
-        MSPDir: crypto-config/peerOrganizations/org.tigerwit.com/msp
+        MSPDir: crypto-config/peerOrganizations/plantform.tigerwit.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.org.tigerwit.com
+            - Host: peer0.plantform.tigerwit.com
+              Port: 7051
+
+    - &User
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: UserMSP
+
+        # ID to load the MSP definition as
+        ID: UserMSP
+
+        MSPDir: crypto-config/peerOrganizations/user.tigerwit.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.user.tigerwit.com
               Port: 7051
 
 ################################################################################

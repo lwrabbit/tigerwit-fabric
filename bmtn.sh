@@ -6,8 +6,8 @@ export FABRIC_CFG_PATH=${PWD}
 # Print the usage message
 function printHelp () {
   echo "Usage: "
-  echo "  tigerwitnetwork.sh -m up|down|restart|generate [-c <channel name>] [-t <timeout>] [-d <delay>] [-f <docker-compose-file>] [-s <dbtype>]"
-  echo "  tigerwitnetwork.sh -h|--help (print this message)"
+  echo "  bmtn.sh -m up|down|restart|generate [-c <channel name>] [-t <timeout>] [-d <delay>] [-f <docker-compose-file>] [-s <dbtype>]"
+  echo "  bmtn.sh -h|--help (print this message)"
   echo "    -m <mode> - one of 'up', 'down', 'restart' or 'generate'"
   echo "      - 'up' - bring up the network with docker-compose up"
   echo "      - 'down' - clear the network with docker-compose down"
@@ -22,14 +22,14 @@ function printHelp () {
   echo "Typically, one would first generate the required certificates and "
   echo "genesis block, then bring up the network. e.g.:"
   echo
-  echo "	tigerwitnetwork.sh -m generate -c mychannel"
-  echo "	tigerwitnetwork.sh -m up -c mychannel -s couchdb"
-  echo "	tigerwitnetwork.sh -m down -c mychannel"
+  echo "	bmtn.sh -m generate -c mychannel"
+  echo "	bmtn.sh -m up -c mychannel -s couchdb"
+  echo "	bmtn.sh -m down -c mychannel"
   echo
   echo "Taking all defaults:"
-  echo "	tigerwitnetwork.sh -m generate"
-  echo "	tigerwitnetwork.sh -m up"
-  echo "	tigerwitnetwork.sh -m down"
+  echo "	bmtn.sh -m generate"
+  echo "	bmtn.sh -m up"
+  echo "	bmtn.sh -m down"
 }
 
 # Ask user for confirmation to proceed
@@ -99,7 +99,7 @@ function networkUp () {
       CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE up -d 2>&1
   fi
   if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to start network"
+    echo "ERROR !!!! Unable to start tigerwit network"
     docker logs -f cli
     exit 1
   fi
@@ -142,10 +142,14 @@ function replacePrivateKey () {
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
   CURRENT_DIR=$PWD
-  cd crypto-config/peerOrganizations/org.tigerwit.com/ca/
+  cd crypto-config/peerOrganizations/platform.tigerwit.com/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
-  sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+  sed $OPTS "s/CAPLANTFORM_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+  cd crypto-config/peerOrganizations/user.tigerwit.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CAUSER_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
     rm docker-compose-e2e.yamlt
@@ -205,11 +209,21 @@ function generateChannelArtifacts() {
 
   echo
   echo "#################################################################"
-  echo "####   Generating anchor peer update for TigerWitOrgMSP   #######"
+  echo "####   Generating anchor peer update for PlantFormMSP   #######"
   echo "#################################################################"
-  configtxgen -profile TigerWitChannel -outputAnchorPeersUpdate ./channel-artifacts/TigerWitOrgMSP.tx -channelID $CHANNEL_NAME -asOrg TigerWitOrgMSP
+  configtxgen -profile TigerWitChannel -outputAnchorPeersUpdate ./channel-artifacts/PlantFormMSP.tx -channelID $CHANNEL_NAME -asOrg PlantFormMSP
   if [ "$?" -ne 0 ]; then
-    echo "Failed to generate anchor peer update for TigerWitOrgMSP..."
+    echo "Failed to generate anchor peer update for PlantFormMSP..."
+    exit 1
+  fi
+
+  echo
+  echo "#################################################################"
+  echo "####      Generating anchor peer update for UserMSP       #######"
+  echo "#################################################################"
+  configtxgen -profile TigerWitChannel -outputAnchorPeersUpdate ./channel-artifacts/UserMSP.tx -channelID $CHANNEL_NAME -asOrg UserMSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for UserMSP..."
     exit 1
   fi
   echo
