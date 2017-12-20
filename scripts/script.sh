@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo
-echo " _____      _   	 _____	    _____     ____   "
-echo "|_   _|    | |  	／ ____\	   | ____|   |  _ \  "
-echo "  | |      | |  	| |	  _    |  _|     | |_) | "
-echo "  | |      | |  	| |__| |   | |___    |  _ <  "
-echo "  |_|      |_|  	 \_____|   |_____|   |_| \_\ "
+echo " _____      _      _____      _____     ____   "
+echo "|_   _|    | |    ／ ____\	   | ____|   |  _ \  "
+echo "  | |      | |    | |	  _    |  _|     | |_) | "
+echo "  | |      | |    | |__| |   | |___    |  _ <  "
+echo "  |_|      |_|     \_____|   |_____|   |_| \_\ "
 echo
 echo " Build my tiger network (BMTN) end-to-end test "
 echo
@@ -116,7 +116,7 @@ joinChannel () {
 installChaincode () {
 	PEER=$1
 	setGlobals $PEER
-	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/tigerwit/chaincode/go/example >&log.txt
+	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/chaincode/example >&log.txt
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$PEER has Failed"
