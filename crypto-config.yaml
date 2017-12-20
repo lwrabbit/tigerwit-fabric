@@ -74,7 +74,7 @@ PeerOrgs:
   # Org2: See "Org1" for full specification
   # ---------------------------------------------------------------------------
   - Name: User
-    Domain: user.example.com
+    Domain: user.tigerwit.com
     Template:
       Count: 2
     Users:
